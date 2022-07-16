@@ -1,4 +1,5 @@
 import Head from "next/head"
+import Connect from "../components/Connect"
 import Navbar from "../components/Navbar"
 
 export default function Index() {
@@ -10,6 +11,7 @@ export default function Index() {
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
       </Head>
       <Navbar />
+      <Connect />
 
     </>
   )

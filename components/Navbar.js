@@ -1,10 +1,23 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useAddress, useDisconnect, useMetamask } from "@thirdweb-dev/react";
+import { useState } from "react";
 export default function Navbar() {
+
+    const [popupState, setPopupState] = useState(false);
+
+
     const connectWithMetamask = useMetamask();
     const address = useAddress();
     const disconnectToWallet = useDisconnect();
+
+    const onTriggerPopup = () => setPopupState(!popupState);
+
+    //disconnect wallet 
+    const handleDisconnect = () => {
+        disconnectToWallet();
+        onTriggerPopup();
+    }
     return (
         <>
             {/* <header className="border border-l-0 border-r-0 bg-[#1B2129] border-white/10 h-[9vh] flex items-center justify-center fixed top-0 left-o right-0"> */}
@@ -28,7 +41,7 @@ export default function Navbar() {
                             </ul>
                         ) : (
                             <ul className="group relative">
-                                <div className="border border-slate-600 bg-black/50 cursor-pointer flex items-center justify-between px-3 gap-3 py-1 rounded-md hover:border-blue-500 group-hover:bg-slate-900 xsm:gap-2 transition-all" >
+                                <div className="border border-slate-600 bg-black/50 cursor-pointer flex items-center justify-between px-3 gap-3 py-1 rounded-md hover:border-blue-500 group-hover:bg-slate-900 xsm:gap-2 transition-all" onClick={onTriggerPopup} >
                                     <div className="flex items-center "><Image src={`https://ethereum.org/static/a183661dd70e0e5c70689a0ec95ef0ba/81d9f/eth-diamond-purple.webp`} alt='img/eth' width={15} height={25} objectFit='contain' /></div>
                                     <div className="grid items-center">
                                         <p className="text-xs leading-tight text-gray-400 group-hover:text-slate-300">3.303 Eth</p>
@@ -42,6 +55,15 @@ export default function Navbar() {
                     }
                 </nav>
             </header>
+
+            {address && <div>
+                <div className={`border border-gray-600 bg-[#1B2129] px-2.5 py-2 flex items-start justify-center flex-col w-[13rem] rounded-md absolute top-[8vh] right-[7.5rem] lg:right-[2.5rem] md:right-[1.3rem] opacity-100 z-[2000] transition-all ${popupState ? 'onpopupshow' : 'onpopupnotshow'} `}>
+                    <div className="text-sm font-bold flex items-center text-slate-300">Personal Wallet <span className="ml-1 bg-lime-300 text-black text-xs px-1 py-0.5 rounded animate-pulse">Connected</span></div>
+                    <div className="text-slate-400 text-sm">Copy Wallet Address</div>
+                    <div className="text-sm text-slate-300 border border-gray-500 px-2 py-0.5 rounded w-full">Network: Rinkeby Eth</div>
+                    <button type="button" className="text-sm w-full py-1 bg-gradient-to-br from-pink-600 to-violet-600 rounded-md shadow-md shadow-rose-600 active:scale-90 my-2" onClick={handleDisconnect}>Disconnect</button>
+                </div>
+            </div>}
         </>
     )
 }
